@@ -5,6 +5,11 @@
 # Home page
 GET     /                           controllers.Application.index()
 
+# Facebook Connect
+GET /fbconnect                      controllers.Facebook.fbConnect()
+GET /fbConnect/code                 controllers.Facebook.fbLoginCode()
+
+
 # Map static resources from Twitter Bootstrap
 GET     /assets/img/glyphicons-halflings.png    controllers.Assets.at(path="/public", file="/images/glyphicons-halflings.png")
 GET     /assets/img/glyphicons-halflings-white.png    controllers.Assets.at(path="/public", file="/images/glyphicons-halflings-white.png")
