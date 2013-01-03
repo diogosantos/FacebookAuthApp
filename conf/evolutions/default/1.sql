@@ -11,6 +11,7 @@ create table user (
   birthday                  timestamp,
   email                     varchar(255),
   created_at                timestamp,
+  fb_id                     bigint,
   constraint pk_user primary key (id))
 ;
 

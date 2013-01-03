@@ -36,13 +36,18 @@ public class User extends Model {
     public Date birthday;
 
     @Constraints.Required
+    @Constraints.Email
     public String email;
 
     @Constraints.Required
     public Date createdAt;
 
+    @Constraints.Required
+    public Long fbId;
+
     public static User newFromJson(JsonNode json) {
         User user = new User();
+        user.fbId = json.get("id").asLong();
         user.username = json.get("username").asText();
         user.gender = json.get("gender").asText();
         user.name = json.get("name").asText();
@@ -55,6 +60,10 @@ public class User extends Model {
     public static Finder<Long,User> find = new Finder<Long,User>(
             Long.class, User.class
     );
+
+    public String getPicture() {
+        return "https://graph.facebook.com/" + fbId + "/picture";
+    }
 
     private static Date parseDate(String birthday) {
         try {

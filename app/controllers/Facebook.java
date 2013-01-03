@@ -44,6 +44,7 @@ public class Facebook extends Controller {
     }
 
     public static Result fbLoginCode() {
+        //TODO refactor: move all the facebook access code to an object like 'FacebookConnect'
         try {
             Logger.info("Parsing returned code from fb...");
             String[] code = request().queryString().get("code");
