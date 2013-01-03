@@ -17,7 +17,6 @@ import play.mvc.Result;
 
 public class Facebook extends Controller {
 
-    private static final String NETWORK_NAME = "Facebook";
     private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/me";
     private static final Token EMPTY_TOKEN = null;
 
@@ -31,6 +30,7 @@ public class Facebook extends Controller {
             .apiKey(fbAppId)
             .apiSecret(fbAppSecret)
             .callback(fbCallback)
+            .scope("email,user_birthday")
             .build();
 
 
