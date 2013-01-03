@@ -1,6 +1,7 @@
 package controllers;
 
 import models.User;
+import org.codehaus.jackson.JsonNode;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.FacebookApi;
 import org.scribe.model.OAuthRequest;
@@ -10,6 +11,7 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import play.Configuration;
 import play.Logger;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -45,7 +47,7 @@ public class Facebook extends Controller {
         try {
             Logger.info("Parsing returned code from fb...");
             String[] code = request().queryString().get("code");
-            if(code != null && code.length > 0) {
+            if (code != null && code.length > 0) {
                 Logger.debug("Code received from db:" + code[0]);
                 Verifier verifier = new Verifier(code[0]);
 
@@ -58,34 +60,26 @@ public class Facebook extends Controller {
                 service.signRequest(accessToken, request);
                 org.scribe.model.Response response = request.send();
 
-                Logger.debug("Code received is:"  + response.getCode());
+                Logger.debug("Code received is:" + response.getCode());
                 String body = response.getBody();
                 Logger.debug("Response data received is:" + body);
 
-                Logger.debug("Starting parsing the JSON response as User object");
+                session("userData", body);
+                return redirect(
+                        routes.Application.index()
+                );
 
-
-                User user = getUser(body);
-                return ok("User email is:" + user.email + " and username is:" + user.username);
-
-            }  else {
+            } else {
                 Logger.debug("I should not be here => Code received is invalid or empty");
                 return badRequest("Unknown Error");
             }
 
-        }   catch (Exception e) {
-            Logger.error("Sorry, an error has occurred. Message from server is: " + e.getMessage());
+        } catch (Exception e) {
+            String message = e.getMessage() == null ? "Unknown Error" : e.getMessage();
+            Logger.error("Sorry, an error has occurred. Message from server is: " + message);
             e.printStackTrace();
-            return badRequest(e.getMessage());
+            return badRequest(message);
         }
-    }
-
-    private static User getUser(String body) {
-        // TODO: parse json to user object
-        User user = new User();
-        user.email = "diogo@diogosantos.com";
-        user.username = "diogosantos1";
-        return user;
     }
 
 

@@ -1,11 +1,18 @@
+@(user: User)
+
 @main(title = "Home") {
 
+   @if(user != null) {
+    <p>Hello, @user.name! (<a href="@routes.Application.logout">Log out</a> )</p>
+   } else {
+    <p><a href="@routes.Facebook.fbConnect"><img src="@routes.Assets.at("images/facebook-connect-button-21.png")" /></a></p>
+   }
 
   <h3>Test Bootstrap Icon</h3>
   <p><i class="icon-info-sign"></i></p>
   
   <h3>Test Bootstrap Button</h3>
-  <p><a class="btn btn-primary" href="@routes.Facebook.fbConnect">Facebook Connect</a></p>
+  <p><a class="btn btn-primary" href="#">Fancy Button</a></p>
   
   <h3>Test Bootstrap Javascript</h3>
   <p><a href="#" class="btn btn-danger" rel="popover" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="A Title">Click to toggle popover</a></p>
