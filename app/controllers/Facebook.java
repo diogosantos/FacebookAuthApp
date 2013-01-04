@@ -30,7 +30,7 @@ public class Facebook extends Controller {
             .apiKey(fbAppId)
             .apiSecret(fbAppSecret)
             .callback(fbCallback)
-            .scope("email,user_birthday")
+            .scope("email,user_birthday,user_location")
             .build();
 
 

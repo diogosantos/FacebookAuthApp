@@ -12,6 +12,7 @@ create table user (
   email                     varchar(255),
   created_at                timestamp,
   fb_id                     bigint,
+  location                  varchar(255),
   constraint pk_user primary key (id))
 ;
 

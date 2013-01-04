@@ -45,6 +45,9 @@ public class User extends Model {
     @Constraints.Required
     public Long fbId;
 
+    @Constraints.Required
+    public String location;
+
     public static User newFromJson(JsonNode json) {
         User user = new User();
         user.fbId = json.get("id").asLong();
@@ -54,6 +57,7 @@ public class User extends Model {
         user.email = json.get("email").asText();
         user.birthday = parseDate(json.get("birthday").asText());
         user.createdAt = new Date();
+        user.location = json.get("location").get("name").asText();
         return user;
     }
 
