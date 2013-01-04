@@ -3,12 +3,15 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
+GET     /                               controllers.Application.index()
+
+# Stores
+GET     /stores                         controllers.Stores.index()
 
 # Facebook Connect
-GET /fbconnect                      controllers.Facebook.fbConnect()
-GET /fbConnect/code                 controllers.Facebook.fbLoginCode()
-GET /fbDisconnect                   controllers.Application.logout()
+GET     /fbconnect                      controllers.Facebook.fbConnect()
+GET     /fbConnect/code                 controllers.Facebook.fbLoginCode()
+GET     /fbDisconnect                   controllers.Application.logout()
 
 # Map static resources from Twitter Bootstrap
 GET     /assets/img/glyphicons-halflings.png    controllers.Assets.at(path="/public", file="/images/glyphicons-halflings.png")

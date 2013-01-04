@@ -7,9 +7,10 @@
             <p>Hello, <strong>@user.name</strong> (<a href="@routes.Application.logout">Log out</a> )</p>
             <p>Your email address is <strong>@user.email</strong> and you were born on <strong>@user.birthday.format("dd/MM/yyyy")</strong></p>
             <p>You are living currently in <strong>@user.location</strong> and was registered on <strong>@user.createdAt.format("dd/MM/yyyy HH:mm")</strong></p>
+            <p><a href="@routes.Stores.index">Go to secured page</a></p>
         </div>
     } else {
         <p><a href="@routes.Facebook.fbConnect"><img src="@routes.Assets.at("images/facebook-connect-button-21.png")" /></a>
     </p>
-}
+    }
 }

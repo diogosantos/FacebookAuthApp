@@ -1,14 +1,8 @@
 package controllers;
 
 import models.FacebookConnect;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.FacebookApi;
-import org.scribe.model.Token;
-import org.scribe.oauth.OAuthService;
-import play.Configuration;
 import play.Logger;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 
 import java.security.InvalidParameterException;

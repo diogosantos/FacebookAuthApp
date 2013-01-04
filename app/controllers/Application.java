@@ -16,6 +16,7 @@ public class Application extends Controller {
         if (userData != null) {
             Logger.debug("Starting parsing the JSON response as User object");
             user = User.newFromJson(Json.parse(userData));
+            session("username", user.username);
             if (!isRegistered(user)) {
                 Logger.debug("First access, registering user");
                 Ebean.save(user);
