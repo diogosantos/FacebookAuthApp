@@ -30,19 +30,7 @@ public class FacebookConnect {
             .scope("email,user_birthday,user_location")
             .build();
 
-    private Token token;
-
-    public FacebookConnect(String[] codeComplex) {
-        if (codeComplex == null || codeComplex.length == 0) {
-            throw new InvalidParameterException("The code array must have one entry at least.");
-        }
-        Logger.debug("Code received from fb:" + codeComplex[0]);
-
-        Token accessToken = service.getAccessToken(EMPTY_TOKEN, new Verifier(codeComplex[0]));
-        Logger.debug("Got the Access Token: " + accessToken);
-
-        this.token = accessToken;
-    }
+    Token token;
 
     public String getAuthorizationUrl() {
         return service.getAuthorizationUrl(EMPTY_TOKEN);
@@ -54,12 +42,19 @@ public class FacebookConnect {
         service.signRequest(token, request);
         org.scribe.model.Response response = request.send();
 
-        String body = response.getBody();
-        Logger.debug("User data received: " + body);
-        return body;
+        Logger.debug("User data received");
+        return response.getBody();
     }
 
-    public boolean isAuthorized() {
+    private Token getToken(String code) {
+        Token accessToken = service.getAccessToken(EMPTY_TOKEN, new Verifier(code));
+        Logger.debug("Got the Access Token: " + accessToken);
+        return token = accessToken;
+    }
+
+    public boolean isAuthorized(String code) {
+        token = getToken(code);
         return token != null;
     }
+
 }

@@ -11,12 +11,13 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import java.security.InvalidParameterException;
+
 public class Facebook extends Controller {
 
-    private static FacebookConnect facebook;
+    private static FacebookConnect facebook = new FacebookConnect();
 
     public static Result fbConnect() {
-        facebook = new FacebookConnect(request().queryString().get("code"));
         String authorizationUrl = facebook.getAuthorizationUrl();
 
         Logger.debug("Now redirecting to " + authorizationUrl + " for authorization.......");
@@ -25,7 +26,8 @@ public class Facebook extends Controller {
 
     public static Result fbLoginCode() {
         try {
-            if (facebook.isAuthorized()) {
+            String[] codeComplex = request().queryString().get("code");
+            if (facebook.isAuthorized(getCode(codeComplex))) {
                 session("userData", facebook.getUserData());
 
                 return redirect(
@@ -39,6 +41,13 @@ public class Facebook extends Controller {
             Logger.error("Sorry, an error has occurred.", e);
             return badRequest(e.getMessage() == null ? "Unknown Error" : e.getMessage());
         }
+    }
+
+    private static String getCode(String[] codeComplex) {
+        if (codeComplex == null || codeComplex.length == 0) {
+            throw new InvalidParameterException("The code array must have one entry at least.");
+        }
+        return codeComplex[0];
     }
 
 
