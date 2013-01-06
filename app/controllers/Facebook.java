@@ -1,7 +1,12 @@
 package controllers;
 
 import models.FacebookConnect;
+import models.User;
+import org.codehaus.jackson.JsonNode;
 import play.Logger;
+import play.data.Form;
+import play.data.validation.ValidationError;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -22,11 +27,7 @@ public class Facebook extends Controller {
         try {
             String[] codeComplex = request().queryString().get("code");
             if (facebook.isAuthorized(getCode(codeComplex))) {
-                session("userData", facebook.getUserData());
-
-                return redirect(
-                        routes.Application.index()
-                );
+                return handleAuthorizedUser();
             } else {
                 Logger.debug("I should not be here => Code received is invalid or empty");
                 return badRequest("Facebook Authorization Error");
@@ -35,6 +36,43 @@ public class Facebook extends Controller {
             Logger.error("Sorry, an error has occurred.", e);
             return badRequest(e.getMessage() == null ? "Unknown Error" : e.getMessage());
         }
+    }
+
+    private static Result handleAuthorizedUser() {
+        Logger.debug("Starting parsing the JSON response");
+        JsonNode jsonNode = Json.parse(facebook.getUserData());
+
+        if (User.isFirstAccess(jsonNode.get("email").asText())) {
+            Logger.debug("First access, registering user");
+
+            Form<User> userForm = getUserForm(jsonNode);
+            if (userForm.hasErrors()) {
+                Logger.debug("User doesn't contain complete data: " + Json.stringify(userForm.errorsAsJson()));
+                return unauthorized(getErrorMessage(userForm));
+            } else {
+                userForm.get().save();
+                Logger.debug("User registered");
+            }
+        }
+
+        session("username", jsonNode.get("username").asText());
+        Logger.debug("Session initiated");
+
+        return redirect(
+                routes.Application.index()
+        );
+    }
+
+    private static String getErrorMessage(Form<User> userForm) {
+        StringBuilder errors = new StringBuilder();
+        for (ValidationError ve : userForm.globalErrors()) {
+            errors.append(ve.message() + "\n");
+        }
+        return "Facebook uer data is incomplete. Please fill in the required information on your facebook account: \n\t" + Json.stringify(userForm.errorsAsJson());
+    }
+
+    private static Form<User> getUserForm(JsonNode jsonNode) {
+        return form(User.class).bind(User.getFieldsFromJson(jsonNode));
     }
 
     private static String getCode(String[] codeComplex) {
